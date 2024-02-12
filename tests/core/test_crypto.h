@@ -33,6 +33,7 @@
 
 #include "core/crypto/crypto.h"
 #include "tests/test_macros.h"
+#include <iostream>
 
 namespace TestCrypto {
 
@@ -67,6 +68,63 @@ TEST_CASE("[Crypto] PackedByteArray constant time compare") {
 	CHECK(equal);
 	equal = crypto.constant_time_compare(p1, p2);
 	CHECK(!equal);
+}
+
+// Key in the opened file is not valid - load()
+TEST_CASE("[Crypto] Load() - Invalid Key") {
+	Ref<CryptoKey> key = CryptoKey::create();
+	Error err = key->load("tests/core/test_time.h");
+	CHECK(err == FAILED);
+}
+
+// Invalid file - load()
+TEST_CASE("[Crypto] Load() - Invalid file") {
+	Ref<CryptoKey> key = CryptoKey::create();
+	Error err = key->load("caca.txt");
+	CHECK(err == ERR_INVALID_PARAMETER);
+}
+
+// Invalid key saved - save()
+TEST_CASE("[Crypto] Save() - Invalid file") {
+	Ref<CryptoKey> key = CryptoKey::create();
+	Error err = key->save("cacaa.txt");
+	CHECK(err == FAILED);
+}
+
+// Invalid key saved - save_to_string
+TEST_CASE("[Crypto] Save_To_String() - Invalid Key") {
+	Ref<CryptoKey> key = CryptoKey::create();
+    CHECK(key->save_to_string() == "");
+}
+
+// Invalid key loaded - load_from_string
+TEST_CASE("[Crypto] Save() - Invalid file") {
+	Ref<CryptoKey> key = CryptoKey::create();
+	Error err = key->load_from_string("i hate this so much");
+	CHECK(err == FAILED);
+}
+
+// Valid file - load()
+TEST_CASE("[Crypto] Load() - Valid file") {
+	Ref<CryptoKey> key = CryptoKey::create();
+	Error err = key->load("potato.key");
+	CHECK(err == OK);
+}
+
+// Valid public file - load()
+TEST_CASE("[Crypto] Load() - Already in use") {
+	Ref<CryptoKey> key = CryptoKey::create();
+	Error err = key->load("potato.pub", true);
+    CHECK(err == OK);
+    CHECK(true == key->is_public_only());
+}
+
+// Valid public file save - save()
+TEST_CASE("[Crypto] Load() - Already in use") {
+	Ref<CryptoKey> key = CryptoKey::create();
+	key->load("potato.pub", true);
+    Error err = key->save("mecago.txt", true);
+    CHECK(err == OK);
 }
 } // namespace TestCrypto
 
