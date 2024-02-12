@@ -112,7 +112,7 @@ TEST_CASE("[Crypto] Load() - Valid file") {
 }
 
 // Valid public file - load()
-TEST_CASE("[Crypto] Load() - Already in use") {
+TEST_CASE("[Crypto] Load() - Valid public load") {
 	Ref<CryptoKey> key = CryptoKey::create();
 	Error err = key->load("potato.pub", true);
     CHECK(err == OK);
@@ -120,7 +120,7 @@ TEST_CASE("[Crypto] Load() - Already in use") {
 }
 
 // Valid public file save - save()
-TEST_CASE("[Crypto] Load() - Already in use") {
+TEST_CASE("[Crypto] Save() - Valid public save") {
 	Ref<CryptoKey> key = CryptoKey::create();
 	key->load("potato.pub", true);
     Error err = key->save("mecago.txt", true);
